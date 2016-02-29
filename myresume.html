@@ -6,7 +6,6 @@
 -->
 <html>
 <head>
-	<!-- Hello there -->
 <meta charset="utf-8">
 <title>My Professional Self - Online Resume Maker</title>
 <link href="css/mainStyle.css" rel="stylesheet" type="text/css">
@@ -328,11 +327,14 @@
 	<div id="linkGen" class="editWrap">
 		<div class="wrapper">
 		<center>
-		Company Name:<input class="text" id= "txtCompanyName" type="text" onclick="toggle(7)">
+		Company Name:<input class="text" id= "txtCompanyName" type="text" >
+		<div id = 'newLink'></div>
+		<input class="btnGenerateLink" type="button" value="Generate">
 		<input class="btnCancel" type="button" value="Cancel" onclick="toggle(7)">
-		<input class="btnUpdate" type="button" value="Update" onclick="toggle(7)">
+		
 		</center>
 		</div>
+		<div class="push"></div>
 	</div>
     <footer>
 	<img src="images/logo.png"></img> <br />

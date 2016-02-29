@@ -431,21 +431,46 @@ function fillBasic2(json){
 }
 function generateLink()
 {
+	console.log('hi');
 	var linkCode = "";
-	var choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789§";
+	var choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	
 	for(i=0;i<6;i++){
 		linkCode += choices.charAt(Math.floor(Math.random()*choices.length));
-		
-		
-	}	console.log(linkCode);
-	return linkCode;
-
-}
-function fillLink()
-{
+		}	
+		checkLink(linkCode);
 	
 }
+function checkLink(linkCode)
+{
+		$.getJSON( "php/php_queries.php", { action:"checkLink", linkCode: linkCode})
+	.done(function(json){
+		
+			checkLink2(json, linkCode);
+		});
+}
+function checkLink2(json, linkCode)
+{
+	if(json.Result == true)
+	{
+		generateLink();
+	}
+	else
+	{
+		insertLink(linkCode);
+	}
+}
+function insertLink(linkCode)
+{
+	var ls = localStorage.getItem("userID");
+	var compName = $('#txtCompanyName').val();
+		$.getJSON( "php/php_queries.php", { action:"insertLink", userID: ls, linkCode: linkCode, compName: compName})
+//change when site changes
+		var usableLink = "<input type = 'text' value = 'http://ict.neit.edu/000484346/public_html/capstone/resume.html?"+linkCode+ "'/>";
+		$('#newLink').html(usableLink);
+		
+}
+
 $(document).ready(function(){
 	
 	$(".editWrap").draggable({ scroll: false, containment: "document" });
@@ -458,9 +483,13 @@ $(document).ready(function(){
 	loadEdu();
 	listEmployers();
 	listSchools();
-	generateLink();
 	
 	
+	$(".btnGenerateLink").click(function(){
+		generateLink();
+			
+		
+	});
 	$("#btnEditVideo").click(function(){
 		updateVid();
 			setTimeout(function () {

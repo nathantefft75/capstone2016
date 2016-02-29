@@ -1,5 +1,4 @@
 var str = "";
-//Test
 function insertLanding()
 {			
 	$.getJSON( "php/php_queries.php", { action: "insertLanding", email: $('#txtEmail').val(), firstName:$('#txtFirstName').val(), lastName:$('#txtLastName').val(), pw:$('#txtPw').val()} );
@@ -46,11 +45,11 @@ function loginTest()
 function finalUserTest(json)
 {
 	$('#emptyLogin').hide();
-	$('#invalidLogin').hide();
+	$('#invalidLogin').show();
 
     if( json.Result == false )
     {	cosnole.log('hi');
-       $('#invalidLogin').toggle();	
+       $('#invalidLogin').show();	
     }
     else
     {

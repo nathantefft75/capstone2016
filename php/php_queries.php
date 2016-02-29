@@ -10,14 +10,11 @@ if (isset($_GET['action']))
 	if (isset($_GET['userID'])) {
         $userID = $_GET['userID'];
     }
-    if (isset($_GET['empID'])) {
-        $empID = $_GET['empID'];
-    }
-     if (isset($_GET['eduID'])) {
-        $eduID = $_GET['eduID'];
-    }
 	if (isset($_GET['email'])) {
         $email = $_GET['email'];
+    }
+	if (isset($_GET['linkCode'])) {
+        $linkCode = $_GET['linkCode'];
     }
 	if (isset($_GET['pw'])) {
         $pw = $_GET['pw'];
@@ -96,6 +93,9 @@ if (isset($_GET['action']))
     }
 	if (isset($_GET['coverLetteretter'])) {
         $coverLetter = $_GET['coverLetter'];
+    }
+	if (isset($_GET['compName'])) {
+        $compName = $_GET['compName'];
     }
 //////Search users
 if ($action === "searchLink")
@@ -301,19 +301,19 @@ if($action === "fillUser"){
 		echo json_encode(array('Result' => $rows));
 }
 if($action === "fillEducation"){
-	$query = "SELECT * FROM education WHERE eduID = :eduID";
+	$query = "SELECT * FROM education WHERE userID = :userID";
 		
 		$statement = $db->prepare ($query);	
-		$statement->bindValue(":eduID", $eduID);
+		$statement->bindValue(":userID", $userID);
 		$success = $statement->execute();
 		$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode(array('Result' => $rows));
 }
 if($action === "fillEmployer"){
-	$query = "SELECT * FROM employer WHERE empID = :empID";
+	$query = "SELECT * FROM employer WHERE userID = :userID";
 		
 		$statement = $db->prepare ($query);	
-		$statement->bindValue(":empID", $empID);
+		$statement->bindValue(":userID", $userID);
 		$success = $statement->execute();
 		$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode(array('Result' => $rows));
@@ -337,7 +337,7 @@ if($action === "fillProject"){
 		echo json_encode(array('Result' => $rows));
 }
 if($action === "fillVideo"){
-	$query = "SELECT videoLink FROM `user` WHERE userID = :userID AND videoLink != '' ";
+	$query = "SELECT * FROM `user` WHERE userID = :userID AND videoLink != '' ";
 		
 		$statement = $db->prepare ($query);	
 		$statement->bindValue(":userID", $userID);
@@ -367,9 +367,9 @@ if($action === "updateBasic"){
 }
 if($action === "updateEducation"){
     $query = "UPDATE education SET  school = :school, degree = :degree, startDateMonth = :startMonth, startDateYear = :startYear, endDateMonth = :endMonth, endDateYear = :endYear" +
-	", GPA = :GPA WHERE eduID = :eduID";
+	", GPA = :GPA WHERE userID = :userID";
     $statement = $db->prepare ($query);
-    $statement->bindValue (":eduID", $eduID);
+    $statement->bindValue (":userID", $userID);
 	$statement->bindValue(":school", $school);
 	$statement->bindValue(":degree", $degree);	
 	$statement->bindValue (":startMonth", $startMonth);
@@ -382,9 +382,9 @@ if($action === "updateEducation"){
 }
 if($action === "updateEmployment"){
     $query = "UPDATE employer SET  employerName = :employerName, position = :position, startDateMonth = :startMonth, startDateYear = :startYear, endDateMonth = :endMonth, endDateYear = :endYear" +
-	", empLink = :empLink, responsibilities = :responsibilities WHERE empID = :empID";
+	", empLink = :empLink, responsibilities = :responsibilities WHERE userID = :userID";
     $statement = $db->prepare ($query);
-    $statement->bindValue (":empID", $empID);
+    $statement->bindValue (":userID", $userID);
 	$statement->bindValue (":employerName", $employerName);			
 	$statement->bindValue (":position", $position);		
 	$statement->bindValue (":startMonth", $startMonth);
@@ -400,19 +400,33 @@ if($action === "updateCover"){
     $query = "UPDATE coverletter SET  coverLetter = :coverLetter WHERE userID = :userID";
     $statement = $db->prepare ($query);
     $statement->bindValue (":userID", $userID);
-	$statement->bindValue(":coverLetter", $coverLetter);
+	$statement->bindValue(":coverLetter", $coverLetter);	
+}
+if($action === "checkLink"){
+	$query = "SELECT * FROM link WHERE link = :linkCode";
+		
+		$statement = $db->prepare ($query);	
+		$statement->bindValue (":linkCode", $linkCode);
+		$success = $statement->execute();
+		$rows = $statement->fetch();
+		echo json_encode(array('Result' => $rows));
 	
 }
-
-if($action === "deleteEducation"){
-	$query = "DELETE FROM education WHERE eduID = " .$_GET['eduID'];
-	$statement = $db->prepare ($query);		
-	$statement->execute();
+if($action === "insertLink"){
+		$query = "INSERT INTO link (userID, link, companyName) VALUES(:userID, :linkCode, :compName)";
+		$statement = $db->prepare ($query);
+		$statement->bindValue (":userID", $userID);	
+		$statement->bindValue (":linkCode", $linkCode);			
+		$statement->bindValue (":compName", $compName);	
+			
+		$statement->execute();
 }
 
-if($action === "deleteEmployer"){
-	$query = "DELETE FROM employer WHERE empID = " .$_GET['empID'];
-	$statement = $db->prepare ($query);		
-	$statement->execute();
+if ($action === "addCover"){	
+		$query = "INSERT INTO coverLetter (userID, coverLetter) VALUES ( :userID, :coverLetter)";
+		$statement = $db->prepare ($query);
+		$statement->bindValue (":userID", $userID);			
+		$statement->bindValue(":coverLetter", $coverLetter);
+		$statement->execute();
 }
 ?>
